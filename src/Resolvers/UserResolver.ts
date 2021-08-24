@@ -1,4 +1,4 @@
-import User from "./models/User";
+import User from "../models/User";
 
 export const resolvers = {
   Query: {
@@ -6,7 +6,7 @@ export const resolvers = {
     users: () => User.find(),
   },
   Mutation: {
-    createUser: async (_x: any, { name }: { name: String }) => {
+    createUser: async (_o: any, { name }: { name: String }) => {
       const user = new User({ name });
       await user.save();
       return user;

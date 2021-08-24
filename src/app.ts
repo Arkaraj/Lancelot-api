@@ -2,8 +2,8 @@ import { ApolloServer } from "apollo-server-express";
 import express from "express";
 require("dotenv-save").config();
 import { connection } from "./config/connection";
-import { resolvers } from "./resolver";
-import { typeDefs } from "./typeDefs";
+import { resolvers } from "./Resolvers/UserResolver";
+import { typeDefs } from "./TypeDefs/UserTypeDefs";
 
 async function startApolloServer() {
   const server = new ApolloServer({ typeDefs, resolvers });
