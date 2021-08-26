@@ -1,8 +1,11 @@
 import { Schema, model } from "mongoose";
+import { userType } from "../Types/types";
 
 export interface IFollowing extends Document {
   _id: String;
-  name: string;
+  user_details: string;
+  followers: userType[];
+  following: userType[];
 }
 
 const FollowSchema = new Schema(

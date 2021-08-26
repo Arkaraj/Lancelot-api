@@ -1,17 +1,15 @@
 import { model, Schema, Document, Types } from "mongoose";
+import { userType } from "src/Types/types";
 import { regexStrings } from "../config/regexHelper";
 
-export interface IUser extends Document {
+export interface IOrganisation extends Document {
   _id: Types.ObjectId;
   name: string;
-  username: string;
-  email: string;
-  password: string;
-  bio: string;
-  profile_pic: string;
+  descriptionn: string;
+  images: string[];
   interests: string[];
-  organisations: string[];
-  following_fundraisers: string[];
+  fundraisers: string[];
+  creator: string;
   phone: {
     country_code: string;
     number: string;
@@ -23,14 +21,14 @@ export interface IUser extends Document {
     locality: string;
   };
   location: { type: any[]; coordinates: number[] };
-  lancels: number;
-  level: number;
+  members: userType[];
   social_links: any;
+  code: string;
   created_at: Date;
   updated_at: Date;
 }
 
-const UserSchema: Schema = new Schema(
+const OrganisationSchema: Schema = new Schema(
   {
     name: {
       type: String,
@@ -39,21 +37,18 @@ const UserSchema: Schema = new Schema(
       maxLength: [64, "Name cannot be greater than 64 characters"],
       match: [regexStrings.name, "name does not match required pattern"],
     },
-    username: {
+    description: {
       type: String,
-      unique: true,
-      minLength: [3, "username should be atleast 3 character long"],
-      maxLength: [32, "username cannot be greater than 32 characters"],
+      required: true,
+      maxLength: [1000, "Description cannot be greater than 1000 characters"],
       match: [
-        regexStrings.username,
-        "username does not match required pattern",
+        regexStrings.description,
+        "description does not match required pattern",
       ],
     },
-    bio: {
-      type: String,
-      required: false,
-      maxLength: [200, "Name cannot be greater than 200 characters"],
-      match: [regexStrings.description, "bio does not match required pattern"],
+    creator: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
     phone: {
       country_code: {
@@ -98,31 +93,11 @@ const UserSchema: Schema = new Schema(
         type: String,
       },
     },
-    profile_pic: {
-      type: String,
-    },
-    lancels: {
-      type: Number,
-      min: 0,
-      default: 0,
-    },
-    level: {
-      type: Number,
-      min: 1,
-      max: 100,
-      default: 1,
-    },
-    email: {
-      type: String,
-      unique: true,
-      minLength: [3, "email should be atleast 3 character long"],
-      maxLength: [320, "email cannot be greater than 320 characters"],
-      match: [regexStrings.email, "email does not match required pattern"],
-    },
-    password: {
-      type: String,
-      required: true,
-    },
+    images: [
+      {
+        type: String,
+      },
+    ],
     social_links: {
       instagram: {
         type: String,
@@ -141,11 +116,20 @@ const UserSchema: Schema = new Schema(
         default: undefined,
       },
     },
-    following_fundraisers: [
+    fundraisers: [
       {
         type: Schema.Types.ObjectId,
         ref: "Fundraiser",
         default: [],
+      },
+    ],
+    members: [
+      {
+        user_id: { type: Schema.Types.ObjectId, ref: "User" },
+        name: String,
+        username: String,
+        profile_pic: String,
+        joined_on: { type: Date, default: Date.now },
       },
     ],
     interests: [
@@ -154,13 +138,7 @@ const UserSchema: Schema = new Schema(
         default: [],
       },
     ],
-    organisations: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Organisation",
-        default: [],
-      },
-    ],
+    code: { type: String, required: true },
   },
   {
     minimize: true,
@@ -171,6 +149,6 @@ const UserSchema: Schema = new Schema(
   }
 );
 
-UserSchema.index({ location: "2dsphere" });
+OrganisationSchema.index({ location: "2dsphere" });
 
-export default model<IUser>("User", UserSchema);
+export default model<IOrganisation>("Organisation", OrganisationSchema);

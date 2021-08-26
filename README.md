@@ -4,6 +4,12 @@ Lancelot - A simple & easy way to raise funds, A Place where independent creator
 
 This is the Server Side Code for Lancelot.
 
+## IDEAS
+
+- In app coin - lancels, donate to fundraisers/create fundraisers to gain lancels.
+- User can transanct in Lancels. Ex. 1ln = 1000Rs
+- User can join/create organisation through code or some other way.
+
 # TECH STACK
 
 - Node.js TypeScript
