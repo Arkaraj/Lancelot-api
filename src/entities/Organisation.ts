@@ -5,9 +5,16 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  // OneToMany,
   BaseEntity,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  JoinColumn,
 } from "typeorm";
+import { Address } from "./Address";
+import { Fundraiser } from "./Fundraiser";
+import { ImageSchema } from "./ImageSchema";
+import { User } from "./User";
 
 export interface IOrganisation {
   OrgId: string;
@@ -32,120 +39,9 @@ export interface IOrganisation {
   social_links: any;
   code: string;
   created_at: Date;
-  updated_at: Date;
+  // updated_at: Date;
 }
 
-// const OrganisationSchema: Schema = new Schema(
-//   {
-//     name: {
-//       type: String,
-//       required: true,
-//       minLength: [2, "Name should be atleast 2 character long"],
-//       maxLength: [64, "Name cannot be greater than 64 characters"],
-//     },
-//     description: {
-//       type: String,
-//       required: true,
-//       maxLength: [1000, "Description cannot be greater than 1000 characters"],
-//     },
-//     creator: {
-//       type: Schema.Types.ObjectId,
-//       ref: "User",
-//     },
-//     phone: {
-//       country_code: {
-//         type: String,
-//       },
-//       number: {
-//         type: String,
-//         unique: true,
-//       },
-//     },
-//     location: {
-//       type: {
-//         type: String,
-//         enum: ["Point"],
-//       },
-//       coordinates: {
-//         type: [Number],
-//       },
-//     },
-//     address: {
-//       country: {
-//         type: String,
-//         required: false,
-//       },
-//       state: {
-//         type: String,
-//         required: false,
-//       },
-//       city: {
-//         type: String,
-//         required: false,
-//       },
-//       locality: {
-//         type: String,
-//       },
-//     },
-//     images: [
-//       {
-//         type: String,
-//       },
-//     ],
-//     social_links: {
-//       instagram: {
-//         type: String,
-//         default: undefined,
-//       },
-//       facebook: {
-//         type: String,
-//         default: undefined,
-//       },
-//       linkedIn: {
-//         type: String,
-//         default: undefined,
-//       },
-//       twitter: {
-//         type: String,
-//         default: undefined,
-//       },
-//     },
-//     fundraisers: [
-//       {
-//         type: Schema.Types.ObjectId,
-//         ref: "Fundraiser",
-//         default: [],
-//       },
-//     ],
-//     members: [
-//       {
-//         user_id: { type: Schema.Types.ObjectId, ref: "User" },
-//         name: String,
-//         username: String,
-//         profile_pic: String,
-//         joined_on: { type: Date, default: Date.now },
-//       },
-//     ],
-//     interests: [
-//       {
-//         type: String,
-//         default: [],
-//       },
-//     ],
-//     code: { type: String, required: true },
-//   },
-//   {
-//     minimize: true,
-//     timestamps: {
-//       createdAt: "created_at",
-//       updatedAt: "updated_at",
-//     },
-//   }
-// );
-
-// OrganisationSchema.index({ location: "2dsphere" });
-
-// export default model<IOrganisation>("Organisation", OrganisationSchema);
 @ObjectType()
 @Entity()
 export class Organisation extends BaseEntity {
@@ -160,4 +56,47 @@ export class Organisation extends BaseEntity {
   @Field()
   @Column("text")
   description: string;
+
+  @Field(() => [String])
+  @Column("simple-array")
+  interests: string[];
+
+  @Field(() => [ImageSchema])
+  @OneToMany(() => ImageSchema, (img) => img.organisation)
+  images: ImageSchema[];
+
+  @Field(() => [Fundraiser])
+  @OneToMany(() => Fundraiser, (fund) => fund.Organisation)
+  fundraisers: Fundraiser[];
+
+  @Field()
+  @Column("varchar")
+  userid: string;
+  @Field(() => User)
+  @ManyToOne(() => User, (usr) => usr.organisations)
+  creator: User;
+
+  // address, location
+  @Field(() => Address)
+  @OneToOne(() => Address, (addr) => addr.Addressid)
+  @JoinColumn()
+  address: Address;
+
+  // @Field(() => [User])
+  // members: User[];
+
+  @Field()
+  @Column("varchar")
+  social_links: string;
+
+  // Default nanoid
+  @Field()
+  @Column("varchar")
+  code: string;
+
+  @Field()
+  @Column("datetime", {
+    default: new Date().toISOString().slice(0, 19).replace("T", " "),
+  })
+  created_at: Date;
 }

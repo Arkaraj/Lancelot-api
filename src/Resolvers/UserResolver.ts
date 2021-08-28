@@ -6,7 +6,7 @@ export class UserResolver {
   @Query(() => [User])
   public async getAllUsers() {
     return await User.createQueryBuilder("user")
-      .leftJoinAndSelect("user.posts", "post")
+      .leftJoinAndSelect("user.fundraisers", "fundraiser")
       .getMany();
   }
 }

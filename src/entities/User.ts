@@ -5,8 +5,14 @@ import {
   Column,
   OneToMany,
   BaseEntity,
+  OneToOne,
+  JoinColumn,
 } from "typeorm";
+import { Address } from "./Address";
 import { Fundraiser } from "./Fundraiser";
+import { FundraiserContributors } from "./FundraiserContribution";
+import { ImageSchema } from "./ImageSchema";
+import { Organisation } from "./Organisation";
 
 export interface IUser {
   userId: string;
@@ -49,71 +55,35 @@ export class User extends BaseEntity {
   name: string;
 
   @Field()
-  @Column("varchar")
+  @Column("varchar", { unique: true })
   username: string;
 
   @Field()
   @Column("text")
   bio: string;
 
-  // phone: {
-  //   country_code: {
-  //     type: String,
-  //     match: [
-  //       regexStrings.phoneCode,
-  //       "phone code does not match required pattern",
-  //     ],
-  //   },
-  //   number: {
-  //     type: String,
-  //     unique: true,
-  //     match: [
-  //       regexStrings.phoneNumber,
-  //       "phone number does not match required pattern",
-  //     ],
-  //   },
-  // },
-  // location: {
-  //   type: {
-  //     type: String,
-  //     enum: ["Point"],
-  //   },
-  //   coordinates: {
-  //     type: [Number],
-  //   },
-  // },
-  // address: {
-  //   country: {
-  //     type: String,
-  //     required: false,
-  //   },
-  //   state: {
-  //     type: String,
-  //     required: false,
-  //   },
-  //   city: {
-  //     type: String,
-  //     required: false,
-  //   },
-  //   locality: {
-  //     type: String,
-  //   },
-  // },
+  // phone
+  // address, location
+  @Field(() => Address)
+  @OneToOne(() => Address, (addr) => addr.Addressid)
+  @JoinColumn()
+  address: Address;
+
+  @Field(() => ImageSchema)
+  @OneToOne(() => ImageSchema, (img) => img.Imgid)
+  @JoinColumn()
+  profile_pic: ImageSchema;
 
   @Field()
-  @Column("varchar")
-  profile_pic: string;
-
-  @Field()
-  @Column({ default: 0 })
+  @Column("float", { default: 0 })
   lancels: number;
 
   @Field()
-  @Column({ default: 1 })
+  @Column("float", { default: 1 })
   level: number;
 
   @Field()
-  @Column("varchar")
+  @Column("varchar", { unique: true })
   email: string;
 
   @Field()
@@ -126,9 +96,17 @@ export class User extends BaseEntity {
 
   @Field(() => [Fundraiser])
   @OneToMany(() => Fundraiser, (f) => f.creator)
-  following_fundraisers: [];
+  fundraisers: Fundraiser[];
 
+  @Field(() => [String])
+  @Column("simple-array")
   interests: string[];
 
-  // organisations: [];
+  @Field(() => [Organisation])
+  @OneToMany(() => Organisation, (org) => org.creator)
+  organisations: [];
+
+  @Field(() => [FundraiserContributors])
+  @OneToMany(() => FundraiserContributors, (fc) => fc.user)
+  contributedFundraiser: FundraiserContributors[];
 }

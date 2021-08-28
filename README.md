@@ -16,3 +16,13 @@ This is the Server Side Code for Lancelot.
 - GraphQL Apollo Server
 - Mysql
 - Express.js
+
+## Tech
+
+```bash
+# Migrations
+npx ts-node ./node_modules/.bin/typeorm migration:generate -n initialEntities
+
+# Dev Server
+npm run dev
+```
