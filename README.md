@@ -14,5 +14,5 @@ This is the Server Side Code for Lancelot.
 
 - Node.js TypeScript
 - GraphQL Apollo Server
-- MongoDB
+- Mysql
 - Express.js

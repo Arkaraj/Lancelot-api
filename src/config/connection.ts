@@ -1,19 +1,25 @@
-import { connect } from "mongoose";
+import { Connection, createConnection } from "typeorm";
 
-export const connection = async () => {
-  connect(
-    `${process.env.MONGO_URI}`,
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true,
-    },
-    (err) => {
-      if (err) {
-        console.log("Error in Connection with MongoDB, Reason: " + err.message);
-      } else {
-        console.log("Successfully Connected to Database!");
-      }
-    }
-  );
+let connection: Connection | null = null;
+
+const main = async () => {
+  connection = await createConnection()
+    .then(async (connect) => {
+      // await connect.runMigrations();
+      // Creating Admin
+      // await Admin.create({ email: "admin@test.com", name: "Admin1" }).save();
+
+      console.log(`Connected to DB sucessfully ${connect.name}`);
+
+      return connect;
+    })
+    .catch((err) => {
+      console.log(`Error Occured in connecting to the DB ${err}`);
+      return null;
+    });
+  return connection;
 };
+
+main();
+
+export default connection;

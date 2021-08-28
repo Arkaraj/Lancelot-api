@@ -1,26 +1,27 @@
-import { ApolloServer } from "apollo-server-express";
+import "reflect-metadata";
+import { createConnection } from "typeorm";
 import express from "express";
+import { ApolloServer } from "apollo-server-express";
+import { buildSchema } from "type-graphql";
+import { UserResolver } from "./resolvers/UserResolver";
 require("dotenv-save").config();
-import { connection } from "./config/connection";
-import { resolvers } from "./Resolvers/UserResolver";
-import { typeDefs } from "./TypeDefs/UserTypeDefs";
 
-async function startApolloServer() {
-  const server = new ApolloServer({ typeDefs, resolvers });
-
-  await connection();
-  await server.start();
+(async () => {
   const app = express();
-  server.applyMiddleware({ app });
 
-  const port = process.env.PORT || 4000;
+  await createConnection();
 
-  // Modified server startup
-  app.listen({ port }, () => {
-    console.log(
-      `Server ready at http://localhost:${port}${server.graphqlPath} 🚀 `
-    );
+  const apolloServer = new ApolloServer({
+    schema: await buildSchema({
+      resolvers: [UserResolver],
+      validate: true,
+    }),
+    context: ({ req, res }) => ({ req, res }),
   });
-}
 
-startApolloServer();
+  apolloServer.applyMiddleware({ app, cors: false });
+  const port = process.env.PORT || 4000;
+  app.listen(port, () => {
+    console.log(`server started at http://localhost:${port}/graphql`);
+  });
+})();

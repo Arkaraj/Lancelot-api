@@ -1,18 +1,12 @@
-import User from "../models/User";
+import { User } from "../entities/User";
+import { Resolver, Query } from "type-graphql";
 
-export const resolvers = {
-  Query: {
-    users: async () => await User.find(),
-    userById: async (userId: any) => await User.findById(userId),
-  },
-  Mutation: {
-    createUser: async (
-      _o: any,
-      { name, password }: { name: String; password: String }
-    ) => {
-      const user = new User({ name, password });
-      await user.save();
-      return user;
-    },
-  },
-};
+@Resolver()
+export class UserResolver {
+  @Query(() => [User])
+  public async getAllUsers() {
+    return await User.createQueryBuilder("user")
+      .leftJoinAndSelect("user.posts", "post")
+      .getMany();
+  }
+}
