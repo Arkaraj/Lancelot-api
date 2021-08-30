@@ -59,7 +59,7 @@ export class User extends BaseEntity {
   username: string;
 
   @Field()
-  @Column("text")
+  @Column("text", { nullable: true })
   bio: string;
 
   // phone
@@ -91,7 +91,7 @@ export class User extends BaseEntity {
   password: string;
 
   @Field()
-  @Column("varchar")
+  @Column("varchar", { nullable: true })
   social_link: string;
 
   @Field(() => [Fundraiser])

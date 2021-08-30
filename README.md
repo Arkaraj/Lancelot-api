@@ -26,3 +26,11 @@ npx ts-node ./node_modules/.bin/typeorm migration:generate -n initialEntities
 # Dev Server
 npm run dev
 ```
+
+## To-Do
+
+- [x] Create Users
+- [x] Create Fundraiser
+- [x] Create Organization
+- [x] View Fundraisers
+- [x] View Organization

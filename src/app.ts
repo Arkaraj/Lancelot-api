@@ -4,6 +4,8 @@ import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./resolvers/UserResolver";
+import { FundraiserResolver } from "./Resolvers/FundraiseResolver";
+import { OrganisationResolver } from "./Resolvers/OrganisationResolver";
 require("dotenv-save").config();
 
 (async () => {
@@ -13,7 +15,7 @@ require("dotenv-save").config();
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver],
+      resolvers: [UserResolver, FundraiserResolver, OrganisationResolver],
       validate: true,
     }),
     context: ({ req, res }) => ({ req, res }),
