@@ -1,5 +1,6 @@
 import { Resolver, Query, Mutation, Arg } from "type-graphql";
 import { Organisation } from "../entities/Organisation";
+import { nanoid } from "nanoid";
 
 @Resolver()
 export class OrganisationResolver {
@@ -26,7 +27,7 @@ export class OrganisationResolver {
       interests: [],
       userid: creator,
       social_links,
-      code: "xYHz-nanoid",
+      code: nanoid(6),
     }).save();
   }
 }

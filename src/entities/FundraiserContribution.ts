@@ -1,6 +1,7 @@
 import { Field, ObjectType } from "type-graphql";
 import {
   BaseEntity,
+  Column,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -23,12 +24,16 @@ export class FundraiserContributors extends BaseEntity {
   userId: string;
 
   @Field(() => User)
-  @ManyToOne(() => User, (usr) => usr.contributedFundraiser)
   @JoinColumn({ name: "userId" })
+  @ManyToOne(() => User, (usr) => usr.contributedFundraiser)
   user: User;
 
   @Field(() => Fundraiser)
-  @ManyToOne(() => Fundraiser, (cmt) => cmt.contributors)
   @JoinColumn({ name: "fundraiserId" })
+  @ManyToOne(() => Fundraiser, (cmt) => cmt.contributors)
   fundraiser: Fundraiser;
+
+  @Field()
+  @Column("float")
+  amount: number;
 }

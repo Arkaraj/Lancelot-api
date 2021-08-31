@@ -136,9 +136,9 @@ export class Fundraiser extends BaseEntity {
   @Column("boolean", { default: false })
   verified: boolean;
 
-  @Field(() => FundraiserContributors)
+  @Field(() => [FundraiserContributors])
   @OneToMany(() => FundraiserContributors, (fc) => fc.fundraiser)
-  contributors: FundraiserContributors;
+  contributors: FundraiserContributors[];
 
   @Field()
   @Column("varchar")

@@ -19,13 +19,13 @@ export class FundraiserResolver {
     @Arg("name") name: string,
     @Arg("description") description: string,
     @Arg("creator") creator: string,
-    // @Arg("interests") interests: [string],
-    // @Arg("tags") tags: [string],
+    // @Arg("interests") interests: string[],
+    // @Arg("tags") tags: string[] = [],
     @Arg("lancels") lancels: number,
     @Arg("link") link: string,
     @Arg("amount") amount: number,
-    @Arg("start_date") start_date: Date,
-    @Arg("end_date") end_date: Date,
+    @Arg("start_date") start_date: string,
+    @Arg("end_date") end_date: string,
     @Arg("type") type: FundraiserType,
     @Arg("funds_usage") funds_usage: string,
     @Arg("about_me") about_me: string
@@ -39,8 +39,11 @@ export class FundraiserResolver {
       lancels,
       link,
       amount,
-      start_date: start_date.toISOString().slice(0, 19).replace("T", " "),
-      end_date: end_date.toISOString().slice(0, 19).replace("T", " "),
+      start_date: new Date(start_date)
+        .toISOString()
+        .slice(0, 19)
+        .replace("T", " "),
+      end_date: new Date(end_date).toISOString().slice(0, 19).replace("T", " "),
       type,
       funds_usage,
       about_me,

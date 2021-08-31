@@ -73,6 +73,7 @@ export class Organisation extends BaseEntity {
   @Column("varchar")
   userid: string;
   @Field(() => User)
+  @JoinColumn({ name: "userid" })
   @ManyToOne(() => User, (usr) => usr.organisations)
   creator: User;
 
