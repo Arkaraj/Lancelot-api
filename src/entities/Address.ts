@@ -33,6 +33,6 @@ export class Address extends BaseEntity {
   phoneCountryCode: string;
 
   @Field()
-  @Column("varchar", { nullable: true, length: 9 })
+  @Column("varchar", { nullable: true, length: 10 })
   phone: string;
 }

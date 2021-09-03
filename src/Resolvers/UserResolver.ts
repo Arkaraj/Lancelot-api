@@ -4,6 +4,7 @@ import bcyrpt from "bcrypt";
 import { getUniqueUsername } from "../helper/usernameHelper";
 import { FundraiserContributors } from "../entities/FundraiserContribution";
 import { Fundraiser } from "../entities/Fundraiser";
+import { Address } from "../entities/Address";
 @Resolver()
 export class UserResolver {
   @Query(() => [User])
@@ -100,5 +101,108 @@ export class UserResolver {
         },
       ];
     }
+  }
+
+  // Address
+  @Mutation(() => Address)
+  public async AddAddress(
+    @Arg("city") city: string,
+    @Arg("state") state: string,
+    @Arg("Country") Country: string,
+    @Arg("location") location: string,
+    @Arg("pincode") pincode: string,
+    @Arg("phone") phone: string,
+    @Arg("phoneCountryCode", { nullable: true }) phoneCountryCode: string,
+    @Arg("userId") userId: string
+  ) {
+    try {
+      const user = await User.findOne({ where: { userId } });
+
+      if (!user) {
+        return [
+          {
+            path: "user",
+            message: "User Not Found!",
+          },
+        ];
+      }
+
+      const address = await Address.create({
+        city,
+        state,
+        Country,
+        location,
+        pincode,
+        phoneCountryCode,
+        phone,
+      }).save();
+
+      user.address = address;
+      await user.save();
+      return address;
+    } catch (err) {
+      return [
+        {
+          path: "Server",
+          message: "Internal Server Error",
+        },
+      ];
+    }
+  }
+
+  // Update users
+
+  @Mutation(() => User)
+  public async AddBio(@Arg("bio") bio: string, @Arg("userId") userId: string) {
+    let user = await User.findOne({ where: { userId } });
+    if (!user) {
+      return [
+        {
+          path: "user",
+          message: "User Not Found!",
+        },
+      ];
+    }
+    user.bio = bio;
+    await user.save();
+    return user;
+  }
+
+  @Mutation(() => User)
+  public async AddInterests(
+    @Arg("interests", (_type) => [String]) interests: string[],
+    @Arg("userId") userId: string
+  ) {
+    let user = await User.findOne({ where: { userId } });
+    if (!user) {
+      return [
+        {
+          path: "user",
+          message: "User Not Found!",
+        },
+      ];
+    }
+    user.interests = interests;
+    await user.save();
+    return user;
+  }
+
+  @Mutation(() => User)
+  public async AddLink(
+    @Arg("link") social_link: string,
+    @Arg("userId") userId: string
+  ) {
+    let user = await User.findOne({ where: { userId } });
+    if (!user) {
+      return [
+        {
+          path: "user",
+          message: "User Not Found!",
+        },
+      ];
+    }
+    user.social_link = social_link;
+    await user.save();
+    return user;
   }
 }

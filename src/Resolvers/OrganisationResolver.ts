@@ -1,6 +1,7 @@
 import { Resolver, Query, Mutation, Arg } from "type-graphql";
 import { Organisation } from "../entities/Organisation";
 import { nanoid } from "nanoid";
+import { Address } from "../entities/Address";
 
 @Resolver()
 export class OrganisationResolver {
@@ -29,5 +30,52 @@ export class OrganisationResolver {
       social_links,
       code: nanoid(6),
     }).save();
+  }
+
+  // Address
+  @Mutation(() => Address)
+  public async AddAddress(
+    @Arg("city") city: string,
+    @Arg("state") state: string,
+    @Arg("Country") Country: string,
+    @Arg("location") location: string,
+    @Arg("pincode") pincode: string,
+    @Arg("phone") phone: string,
+    @Arg("phoneCountryCode", { nullable: true }) phoneCountryCode: string,
+    @Arg("OrgId") OrgId: string
+  ) {
+    try {
+      const organisation = await Organisation.findOne({ where: { OrgId } });
+
+      if (!organisation) {
+        return [
+          {
+            path: "Organisation",
+            message: "Organisation Not Found!",
+          },
+        ];
+      }
+
+      const address = await Address.create({
+        city,
+        state,
+        Country,
+        location,
+        pincode,
+        phoneCountryCode,
+        phone,
+      }).save();
+
+      organisation.address = address;
+      await organisation.save();
+      return address;
+    } catch (err) {
+      return [
+        {
+          path: "Server",
+          message: "Internal Server Error",
+        },
+      ];
+    }
   }
 }

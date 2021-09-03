@@ -8,6 +8,7 @@ module.exports = [
     database: `${process.env.SQL_Database}`,
     synchronize: false,
     logging: true,
+    cache: "true",
     entities: ["src/entities/**/*.ts"],
     migrations: ["src/migration/**/*.ts"],
     subscribers: ["src/subscriber/**/*.ts"],
